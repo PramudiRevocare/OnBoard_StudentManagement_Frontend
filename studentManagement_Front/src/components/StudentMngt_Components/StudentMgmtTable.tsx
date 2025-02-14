@@ -1,70 +1,67 @@
-interface Column<T> {
-  header: string;
-  accessor: keyof T | "action";
-  render?: (
-    value: any,
-    row: T,
-    handlers?: { edit: (row: T) => void; delete: (row: T) => void }
-  ) => React.ReactNode;
+import React from "react";
+import { Student } from "@/schema/StudentSchema";
+import { studentColumns } from "../Table/Columns";
+
+interface StudentTableProps {
+  data: Student[];
+  onEdit: (student: Student) => void;
+  onDelete: (student: Student) => void;
 }
 
-interface TableProps<T> {
-  columns: Column<T>[];
-  data: T[];
-  handlers?: { edit: (row: T) => void; delete: (row: T) => void };
-}
+const StudentMgmtTable: React.FC<StudentTableProps> = ({ data, onEdit, onDelete }) => {
+  console.log("Table Data Rendering:", data); 
 
-const Table = <T,>({ columns, data, handlers }: TableProps<T>) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border-collapse bg-white shadow-md rounded-lg">
         <thead className="bg-blue-500 text-white">
           <tr>
-            {columns.map((column, index) => (
-              <th
-                key={index}
-                className="px-6 py-3 text-left font-medium uppercase text-sm tracking-wider"
-              >
+            {studentColumns.map((column, index) => (
+              <th key={index} className="px-6 py-3 text-left font-medium uppercase text-sm tracking-wider">
                 {column.header}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className={`border-b ${
-                rowIndex % 2 === 0 ? "bg-gray-50" : "bg-white"
-              } hover:bg-gray-100`}
-            >
-              {columns.map((column, colIndex) => {
-                let cellValue: any =
-                  column.accessor === "action"
-                    ? null
-                    : (row[column.accessor as keyof T] as unknown);
-
-                return (
-                  <td
-                    key={colIndex}
-                    className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap"
-                  >
-                    {column.render
-                      ? column.render(cellValue, row, handlers)
-                      : typeof cellValue === "boolean" ||
-                        typeof cellValue === "string" ||
-                        typeof cellValue === "number"
-                      ? cellValue.toString()
-                      : null}
-                  </td>
-                );
-              })}
+          {data.length === 0 ? (
+            <tr>
+              <td colSpan={studentColumns.length} className="text-center py-4">
+                No students found.
+              </td>
             </tr>
-          ))}
+          ) : (
+            data.map((student, rowIndex) => {
+              console.log(`Rendering Student Row:`, student); 
+              return (
+                <tr key={rowIndex} className={`border-b ${rowIndex % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}>
+                  {studentColumns.map((column, colIndex) => {
+                    console.log(`Column: ${column.accessor}, Value:`, student[column.accessor as keyof Student] || "N/A");
+                    let cellValue = student[column.accessor as keyof Student] || "N/A";
+
+                    return (
+                      <td key={colIndex} className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                        {column.accessor === "action" ? (
+                          <div className="flex space-x-4">
+                            <button onClick={() => onEdit(student)}>✏️</button>
+                            <button onClick={() => onDelete(student)}>🗑</button>
+                          </div>
+                        ) : (
+                          cellValue
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
     </div>
   );
 };
 
-export default Table;
+
+
+export default StudentMgmtTable;
