@@ -101,19 +101,6 @@ const Sidebar: React.FC = () => {
           </li>
         </ul>
       </nav>
-
-      {/* User Profile */}
-      <div className="absolute bottom-4 w-full">
-        <div className="flex items-center px-4 py-3">
-          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-          {!isCollapsed && (
-            <div className="ml-3">
-              <p className="text-sm font-semibold">John Doe</p>
-              <p className="text-xs text-gray-300">Admin</p>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 };
