@@ -11,7 +11,6 @@ export interface Column<T> {
 }
 
 export interface Student {
-  studentId: string;
   studentName: string;
   email: string;
   contactNo: string;
@@ -22,7 +21,6 @@ export interface Student {
 }
 
 export const studentColumns: Column<Student>[] = [
-  { header: "Student ID", accessor: "studentId" },
   { header: "Student Name", accessor: "studentName" },
   { header: "Email", accessor: "email" },
   { header: "Contact No", accessor: "contactNo" },
